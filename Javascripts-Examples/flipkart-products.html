@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../node_modules/bootstrap-icons/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.css">
+    <script>
+        function bodyload(){
+            fetch("../data/products.json")
+            .then(function(response){
+                return response.json();
+            })
+            .then(function(products){
+                products.map(function(product){
+                    var div = document.createElement("div");
+                    div.className = "card m-2 p-2";
+                    div.style.width = "100%";
+                    div.innerHTML = `
+                        <div class="card-body d-flex  align-items-start">
+                            <div style="width: 220px; flex-shrink:0;">
+                                <img src=${product.image} width="200px">
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="h3 text-primary">${product.title}</div>
+                                <div><span class="bg-success text-white rounded rounded-2 p-2"  >${product.ratings.rate}<span class="bi bi-star-fill"></span></span><b>${product.ratings.count} ratings & ${product.ratings.reviews} reviews <b/></div>
+                                <div class="mt-2">
+                                    ${product.features.join("<br>")}
+                                </div>
+
+                            </div>
+                            <div class= "ms-3 text-nowrap">
+                                <div class="h3 "> &#8377; ${product.price} </div>
+                            </div>
+                        </div>
+                    
+                    `;
+                    document.querySelector("main").appendChild(div);
+                    
+                });
+
+            });
+
+        }
+        
+    </script>
+ </head>
+<body class="container-fluid" onload="bodyload()">
+    <main>
+
+    </main>
+    
+</body>
+</html>

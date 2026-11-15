@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>NASA Trek Explorer</title>
+
+    <link rel="stylesheet"
+          href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
+
+    <link rel="stylesheet"
+          href="../node_modules/bootstrap-icons/font/bootstrap-icons.css">
+
+    <style>
+        body {
+            margin: 0;
+            background: #07111f;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+
+        .navbar {
+            background: #0b1d35;
+            border-bottom: 1px solid #233e5c;
+        }
+
+        .hero {
+            padding: 35px 15px;
+            text-align: center;
+            background: linear-gradient(135deg, #102b50, #07111f);
+        }
+
+        .hero h1 {
+            font-weight: bold;
+            color: #70c7ff;
+        }
+
+        .controls {
+            background: #102039;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .form-select {
+            background-color: #fff;
+        }
+
+        .map-frame {
+            width: 100%;
+            height: 75vh;
+            min-height: 500px;
+            border: 1px solid #315171;
+            border-radius: 10px;
+            background: white;
+        }
+
+        .status {
+            color: #b9d8f4;
+            font-size: 14px;
+        }
+
+        footer {
+            color: #9bb0c8;
+            padding: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+<nav class="navbar navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand fw-bold" href="#">
+            <i class="bi bi-globe-americas"></i>
+            NASA Trek Explorer
+        </a>
+
+        <a class="btn btn-outline-info btn-sm"
+           href="https://trek.nasa.gov/tiles/apidoc/"
+           target="_blank"
+           rel="noopener noreferrer">
+            Open Official NASA Trek
+        </a>
+    </div>
+</nav>
+
+<header class="hero">
+    <h1><i class="bi bi-stars"></i> Explore Other Worlds</h1>
+    <p class="mb-0">
+        Explore NASA Trek maps, imagery and planetary layers.
+    </p>
+</header>
+
+<main class="container-fluid p-3 p-md-4">
+
+    <section class="controls">
+        <label for="planet" class="form-label fw-bold">
+            Select a Planet or Moon
+        </label>
+
+        <select id="planet" class="form-select mb-3">
+            <option value="moon">Moon Trek</option>
+            <option value="mars">Mars Trek</option>
+            <option value="mercury">Mercury Trek</option>
+            <option value="vesta">Vesta Trek</option>
+            <option value="ceres">Ceres Trek</option>
+            <option value="icyMoon">Icy Moons Trek</option>
+            <option value="titan">Titan Trek</option>
+        </select>
+
+        <button id="loadBtn" class="btn btn-primary">
+            <i class="bi bi-arrow-clockwise"></i>
+            Load Layers
+        </button>
+
+        <a id="openBtn"
+           class="btn btn-outline-light ms-2"
+           href="https://trek.nasa.gov/tiles/apidoc/trekAPI.html?body=moon"
+           target="_blank"
+           rel="noopener noreferrer">
+            Open in New Tab
+        </a>
+
+        <p id="status" class="status mt-3 mb-0" aria-live="polite">
+            Select a destination to load its documentation.
+        </p>
+    </section>
+
+    <section>
+        <h5 class="mb-3">
+            <i class="bi bi-map"></i> Planetary Layers
+        </h5>
+
+        <iframe
+            id="nasaFrame"
+            class="map-frame"
+            title="NASA Trek planetary layers documentation"
+            src="https://trek.nasa.gov/tiles/apidoc/trekAPI.html?body=moon"
+            loading="eager"
+            referrerpolicy="strict-origin-when-cross-origin">
+        </iframe>
+    </section>
+
+    <p class="mt-3 small">
+        If the content does not appear inside this window,
+        use "Open in New Tab" to access the official NASA Trek page.
+    </p>
+
+</main>
+
+<footer>
+    Planetary data and imagery services by NASA Trek.
+    <br>
+    This is an independent learning project, not an official NASA website.
+</footer>
+
+<script>
+    const planet = document.getElementById("planet");
+    const nasaFrame = document.getElementById("nasaFrame");
+    const openBtn = document.getElementById("openBtn");
+    const loadBtn = document.getElementById("loadBtn");
+    const status = document.getElementById("status");
+
+    function loadPlanet() {
+        const selectedPlanet = planet.value;
+
+        const url =
+            "https://trek.nasa.gov/tiles/apidoc/trekAPI.html?body="
+            + encodeURIComponent(selectedPlanet);
+
+        nasaFrame.src = url;
+        openBtn.href = url;
+
+        status.textContent =
+            "Loading " + planet.options[planet.selectedIndex].text
+            + " documentation...";
+
+        loadBtn.disabled = true;
+
+        // An iframe load event indicates navigation completed,
+        // but does not guarantee the remote content loaded correctly.
+        nasaFrame.onload = function () {
+            status.textContent =
+                "The page finished loading. If it is blank, open it in a new tab.";
+            loadBtn.disabled = false;
+        };
+
+        nasaFrame.onerror = function () {
+            status.textContent =
+                "Unable to load the page here. Try Open in New Tab.";
+            loadBtn.disabled = false;
+        };
+    }
+
+    loadBtn.addEventListener("click", loadPlanet);
+
+    planet.addEventListener("change", loadPlanet);
+</script>
+
+</body>
+</html>
